@@ -76,7 +76,7 @@ locals {
 
 resource "aws_launch_template" "eks_launch_template" {
   name = var.eks_launch_template
-  
+
   block_device_mappings {
     device_name = "/dev/xvda"
     ebs {
@@ -87,4 +87,3 @@ resource "aws_launch_template" "eks_launch_template" {
   }
   # Add other configurations as needed
 }
-

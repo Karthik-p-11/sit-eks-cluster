@@ -1,40 +1,50 @@
-#
-# Ref: https://github.com/jdluther2020/terraform-create-eks-k8s-cluster.git
-#
-# Create EKS Cluster - Variables Collection
-#
-variable "profile" {
-  description = "AWS credential Profile (normally found in ~/.aws/config)"
-  type        = string
-  default     = "iu"
-}
-
-variable "aws_region" {
-  description = "AWS region"
-  type        = string
-  default     = "ap-south-1"
-}
-
-variable "deploy_id_prefix" {
-  description = "Prefix to provide an unique ID to the resources of this setup"
-  type        = string
-  default     = "iu-sit"
-}
-
-variable "cluster_name" {
+variable "eks_cluster_name" {
   description = "EKS cluster name"
   type        = string
-  default     = "data-platform-eks-cluster-new"
+  #default     = "sit-data-platform-eks-cluster"
 }
 
-variable "vpc_name" {
-  description = "VPC name"
+variable "eks_cluster_version" {
+  description = "EKS cluster name"
   type        = string
-  default     = "data-platform-vpc"
+}
+
+variable "nodegroup_one_name" {
+  description = "Nodegroup (group one) name to be used"
+  type        = string
+}
+
+variable "enable_irsa" {
+  description = "Determines whether to create an OpenID Connect Provider for EKS to enable IRSA"
+  type        = bool
+  default     = true
+}
+
+variable "create" {
+  description = "Controls if EKS resources should be created (affects nearly all resources)"
+  type        = bool
+  default     = true
+}
+
+variable "cluster_iam_role_dns_suffix" {
+  description = "Base DNS domain name for the current partition (e.g., amazonaws.com in AWS Commercial, amazonaws.com.cn in AWS China)"
+  type        = string
+  default     = null
+}
+
+variable "openid_connect_audiences" {
+  description = "List of OpenID Connect audience client IDs to add to the IRSA provider"
+  type        = list(string)
+  default     = []
 }
 
 variable "eks_launch_template" {
   description = "Name of the launch template used for EKS node group"
   type = string
-  default = "data-platform-eks-nodegroup"
+}
+
+variable "tags" {
+  description = "A map of tags to add to all resources"
+  type        = map(string)
+  default     = {}
 }
