@@ -13,6 +13,6 @@ terraform {
     bucket = "terraform-state-sit-eks"
     key = "EKSClusters/ap-south-1/iu-sit-data-platform-eks-cluster/terraform.tfstate"
     region = "ap-south-1"
-    profile = "sit"
+    profile = "test-automation"
   }
 }
