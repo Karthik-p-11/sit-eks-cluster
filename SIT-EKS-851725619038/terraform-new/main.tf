@@ -24,7 +24,7 @@ module "module_sit" {
   nodegroup_one_name = local.eks_nodegroup_one_name
   eks_cluster_name = local.eks_cluster_name
   eks_launch_template = local.eks_launch_template
-  eks_cluster_version = "1.29"
+  eks_cluster_version = "1.33"
   tags  = {
     "Name" = "${var.deploy_id_prefix}-${var.cluster_name}"
   }
