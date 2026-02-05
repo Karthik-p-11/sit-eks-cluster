@@ -48,3 +48,43 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "deploy_id_prefix" {
+  description = "Environment prefix (sit, uat, prod)"
+  type        = string
+}
+
+variable "aws_region" {
+  description = "AWS region"
+  type        = string
+}
+
+variable "profile" {
+  description = "AWS CLI profile name"
+  type        = string
+}
+
+variable "vpc_name" {
+  description = "Base VPC name"
+  type        = string
+}
+
+variable "cluster_name" {
+  description = "Base EKS cluster name"
+  type        = string
+}
+
+variable "eks_cluster_version" {
+  description = "EKS cluster version"
+  type        = string
+}
+
+variable "eks_launch_template" {
+  description = "Base launch template name"
+  type        = string
+}
+
+variable "nodegroup_one_name" {
+  description = "Nodegroup base name"
+  type        = string
+}
