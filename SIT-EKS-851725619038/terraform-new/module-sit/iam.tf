@@ -94,7 +94,7 @@ data "aws_iam_policy_document" "csi" {
 
 resource "aws_iam_role" "eks_ebs_csi_driver" {
   assume_role_policy = data.aws_iam_policy_document.csi.json
-  name               = "iu-sit-ap-south-1-eks-ebs-csi-driver"
+  name               = "iu-sit-eks-ebs-csi-driver"
 }
 
 resource "aws_iam_role_policy_attachment" "amazon_ebs_csi_driver" {
@@ -111,6 +111,6 @@ resource "aws_eks_addon" "csi_driver" {
 
 resource "aws_eks_addon" "amazon-cloudwatch-observability" {
   addon_name   = "amazon-cloudwatch-observability"
-  cluster_name = "iu-sit-ap-south-1-data-platform-eks-cluster-new"
+  cluster_name = aws_eks_cluster.eks_cluster.name
   addon_version = "v2.6.0-eksbuild.1"
 }

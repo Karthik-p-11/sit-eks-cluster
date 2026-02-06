@@ -1,7 +1,7 @@
-data "aws_partition" "current" {}
-
 data "aws_region" "current" {}
 
-data "external" "thumbprint" {
-  program = ["${path.module}/thumbprint.sh", data.aws_region.current.name]
+data "aws_partition" "current" {}
+
+data "tls_certificate" "oidc_thumbprint" {
+  url = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
 }

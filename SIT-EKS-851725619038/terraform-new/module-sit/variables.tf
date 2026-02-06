@@ -1,7 +1,7 @@
 variable "eks_cluster_name" {
   description = "EKS cluster name"
   type        = string
-  #default     = "sit-data-platform-eks-cluster"
+  #default     = "sit"
 }
 
 variable "eks_cluster_version" {
@@ -41,6 +41,7 @@ variable "openid_connect_audiences" {
 variable "eks_launch_template" {
   description = "Name of the launch template used for EKS node group"
   type = string
+  default= "iu-sit-db-launch-template"
 }
 
 variable "tags" {
