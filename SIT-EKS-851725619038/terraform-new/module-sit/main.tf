@@ -1,14 +1,7 @@
 data "aws_subnets" "sit_private_subnets" {
    filter {
     name   = "tag:Name"
-    values = ["Private-SIT-ap-south-1a"]
-  }
-}
-
-data "aws_subnets" "sit_public_subnets" {
-   filter {
-    name   = "tag:Name"
-    values = ["Main SIT"]
+    values = ["SIT-PRIVATE-SUBNET-1A" , "SIT-PRIVATE-SUBNET-1B"]
   }
 }
 
@@ -20,7 +13,7 @@ resource "aws_eks_cluster" "eks_cluster" {
   vpc_config {
     endpoint_private_access = true
     endpoint_public_access = true
-    subnet_ids = concat(data.aws_subnets.sit_private_subnets.ids, data.aws_subnets.sit_public_subnets.ids)
+    subnet_ids = data.aws_subnets.sit_private_subnets.ids
   }
   tags = var.tags
 }
@@ -30,9 +23,9 @@ resource "aws_eks_node_group" "eks_cluster_nodegroup_one" {
   cluster_name    = aws_eks_cluster.eks_cluster.name
   node_group_name = var.nodegroup_one_name
   node_role_arn   = aws_iam_role.eks_nodegroup_role.arn
-  subnet_ids      = ["subnet-38960674", "subnet-33eecd5b"]
-  # subnet_ids      = data.aws_subnets.sit_public_subnets.ids
-  ami_type        = "AL2_x86_64"
+ #subnet_ids      = ["subnet-38960674", "subnet-33eecd5b"]
+  subnet_ids      = data.aws_subnets.sit_private_subnets.ids
+  ami_type        = "AL2023_x86_64_STANDARD"
   capacity_type   = "ON_DEMAND"
   instance_types  = ["t2.large"] # t2.large
 
@@ -62,13 +55,13 @@ resource "aws_eks_node_group" "eks_cluster_nodegroup_one" {
   tags = var.tags
 }
 
-resource "aws_iam_openid_connect_provider" "oidc_provider" {
-  count = var.create && var.enable_irsa ? 1 : 0
+#resource "aws_iam_openid_connect_provider" "oidc_provider" {
+ # count = var.create && var.enable_irsa ? 1 : 0
 
-  client_id_list  = distinct(compact(concat(["sts.${local.dns_suffix}"], var.openid_connect_audiences)))
-  thumbprint_list = [data.external.thumbprint.result.thumbprint]
-  url             = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
-}
+  #client_id_list  = distinct(compact(concat(["sts.${local.dns_suffix}"], var.openid_connect_audiences)))
+  #thumbprint_list = [data.external.thumbprint.result.thumbprint]
+  ##url             = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
+#}
 
 locals {
   dns_suffix = coalesce(var.cluster_iam_role_dns_suffix, data.aws_partition.current.dns_suffix)
@@ -86,4 +79,12 @@ resource "aws_launch_template" "eks_launch_template" {
     }
   }
   # Add other configurations as needed
+}
+
+resource "aws_iam_openid_connect_provider" "oidc_provider" {
+  count = var.create && var.enable_irsa ? 1 : 0
+
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [data.tls_certificate.oidc_thumbprint.certificates[0].sha1_fingerprint]
+  url             = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
 }
